@@ -459,5 +459,3 @@ The workflow defined in `.github/workflows/ci.yml` runs automatically on pushes 
 - **Email Delivery Service:** In this portfolio demo, password resets and account verification emails are simulated; integration with SendGrid/AWS SES would be a valuable extension.
 - **Refresh Token Rotation:** The authentication subsystem utilizes short-lived JWT access tokens; implementing refresh token rotation and redis token blacklisting would further enhance security.
 - **Audit Logging Subsystem:** Future work could introduce a centralized immutable audit log capturing all tenant authorization events.
-#   T e s t G u a r d  
- 
