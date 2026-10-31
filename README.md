@@ -1,5 +1,6 @@
-# TestGuard — Automated API Quality & Security Testing Framework
+# TestGuard - Automated API Quality & Security Testing Framework
 
+[![CI](https://github.com/monourhosan/TestGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/monourhosan/TestGuard/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
 [![Pytest](https://img.shields.io/badge/Pytest-86%20Passed%20(100%25)-success.svg)](tests/)
@@ -213,8 +214,8 @@ testguard/
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/testguard.git
-cd testguard
+git clone https://github.com/monourhosan/TestGuard.git
+cd TestGuard
 
 # 2. Create virtual environment
 python -m venv .venv

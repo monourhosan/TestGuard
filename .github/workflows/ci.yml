@@ -1,0 +1,84 @@
+name: TestGuard CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    name: Lint, Test & Security Verification
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testguard_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ENVIRONMENT: test
+      DEBUG: "False"
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testguard_test
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testguard_test
+      SECRET_KEY: test-ci-secret-key-for-automated-github-actions-testing-32b
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Run Ruff Linter & Code Quality Checks
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Run Database Migrations
+        run: |
+          alembic upgrade head
+
+      - name: Execute Automated QA Pytest Suite
+        run: |
+          pytest -v \
+            --cov=app \
+            --cov-report=term-missing \
+            --cov-report=html:reports/htmlcov \
+            --cov-report=xml:reports/coverage.xml \
+            --junitxml=reports/junit.xml \
+            --html=reports/report.html \
+            --self-contained-html
+
+      - name: Upload Test Results & Coverage Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testguard-test-artifacts
+          path: |
+            reports/junit.xml
+            reports/report.html
+            reports/coverage.xml
+            reports/htmlcov/
+          retention-days: 14
